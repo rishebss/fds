@@ -261,14 +261,7 @@ const Attendance = () => {
             <CardHeader className="relative z-10">
               <div className="flex items-center justify-between gap-3 mb-2">
                 <div className="flex items-center gap-3">
-                  <Button
-                    onClick={() => navigate('/students-dashboard')}
-                    variant="outline"
-                    size="sm"
-                    className="border-white/20 bg-white/10 text-white hover:bg-white/20"
-                  >
-                    ← Back
-                  </Button>
+                  
                   <CardTitle className="text-2xl font-bold text-white">
                     Mark Attendance
                   </CardTitle>
@@ -374,7 +367,7 @@ const Attendance = () => {
                   <p className="text-sm text-gray-500">Try adjusting your search or filters.</p>
                 </div>
               ) : (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
+                <div className="space-y-3 max-h-96 overflow-y-auto nice-scrollbar">
                   {filteredStudents.map((student, index) => (
                     <motion.div
                       key={student.id}
