@@ -37,7 +37,7 @@ function Navbar() {
       // Call logout endpoint (optional since JWT is stateless)
       if (token) {
         try {
-          await fetch('http://localhost:3001/api/auth/logout', {
+          await fetch('https://fifac-backend.vercel.app/api/auth/logout', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,

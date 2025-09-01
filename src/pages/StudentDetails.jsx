@@ -44,7 +44,7 @@ const StudentDetails = () => {
         throw new Error('No authentication token found. Please login again.');
       }
       
-      const response = await fetch(`http://localhost:3001/api/students/${id}`, {
+      const response = await fetch(`https://fifac-backend.vercel.app/api/students/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ const StudentDetails = () => {
       }
       
       const response = await fetch(
-        `http://localhost:3001/api/attendance/student/${id}?year=${currentYear}&month=${currentMonth}`,
+        `https://fifac-backend.vercel.app/api/attendance/student/${id}?year=${currentYear}&month=${currentMonth}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -136,7 +136,7 @@ const StudentDetails = () => {
       }
       
       const response = await fetch(
-        `http://localhost:3001/api/attendance/student/${id}/month?year=${currentYear}&month=${currentMonth}`,
+        `https://fifac-backend.vercel.app/api/attendance/student/${id}/month?year=${currentYear}&month=${currentMonth}`,
         { 
           method: 'DELETE',
           headers: {
@@ -193,7 +193,7 @@ const StudentDetails = () => {
         return;
       }
       
-      const response = await fetch(`http://localhost:3001/api/students/${id}`, {
+      const response = await fetch(`https://fifac-backend.vercel.app/api/students/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -256,7 +256,7 @@ const StudentDetails = () => {
         return;
       }
       
-      const response = await fetch(`http://localhost:3001/api/students/${id}`, {
+      const response = await fetch(`https://fifac-backend.vercel.app/api/students/${id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

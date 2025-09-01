@@ -46,7 +46,7 @@ const Attendance = () => {
         throw new Error('No authentication token found. Please login again.');
       }
       
-      const response = await fetch('http://localhost:3001/api/students', {
+      const response = await fetch('https://fifac-backend.vercel.app/api/students', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -119,7 +119,7 @@ const Attendance = () => {
 
       for (const record of attendanceRecords) {
         try {
-          const response = await fetch('http://localhost:3001/api/attendance', {
+          const response = await fetch('https://fifac-backend.vercel.app/api/attendance', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -374,7 +374,7 @@ const Attendance = () => {
                   <p className="text-sm text-gray-500">Try adjusting your search or filters.</p>
                 </div>
               ) : (
-                <div className="space-y-3 max-h-96 overflow-y-auto nice-scrollbar">
+                <div className="space-y-3 max-h-96 overflow-y-auto">
                   {filteredStudents.map((student, index) => (
                     <motion.div
                       key={student.id}
