@@ -374,7 +374,7 @@ const Attendance = () => {
                   <p className="text-sm text-gray-500">Try adjusting your search or filters.</p>
                 </div>
               ) : (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
+                <div className="space-y-3 max-h-96 overflow-y-auto nice-scrollbar">
                   {filteredStudents.map((student, index) => (
                     <motion.div
                       key={student.id}
