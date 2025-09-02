@@ -144,3 +144,13 @@
 .nice-scrollbar::-webkit-scrollbar-thumb:hover {
   background-image: linear-gradient(to bottom, rgba(59, 130, 246, 0.65), rgba(168, 85, 247, 0.65));
 }
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}

@@ -144,15 +144,15 @@ export default function Header() {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:3px_3px] opacity-30" />
               
               <CardHeader className="space-y-1 pb-6 relative z-10">
-                <CardTitle className="text-2xl font-bold text-center text-white">Welcome Back</CardTitle>
-                <CardDescription className="text-center text-gray-400">
+                <CardTitle className="text-4xl font-bold text-center text-white">Welcome Back</CardTitle>
+                <CardDescription className="text-center text-gray-500 mt-4 mb-[-30px]">
                   Test account: admin<br />
                   Test password: admin123
                 </CardDescription>
               </CardHeader>
               
               <CardContent className="relative z-10">
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor="username" className="text-white">Username</Label>
         <Input

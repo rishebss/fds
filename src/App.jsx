@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard'
 import StudentsDashboard from './pages/StudentsDashboard'
 import StudentDetails from './pages/StudentDetails'
 import Attendance from './pages/Attendance'
+import Calendar from './pages/Calendar'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/students-dashboard" element={<StudentsDashboard />} />
             <Route path="/student/:id" element={<StudentDetails />} />
             <Route path="/attendance" element={<Attendance />} />
+            <Route path="/calendar" element={<Calendar />} />
           </Routes>
         </main>
       </div>

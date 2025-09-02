@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom'
+
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useToast } from '@/components/ui/toast'
 
 
@@ -93,6 +93,18 @@ function Navbar() {
         >
           Students
         </Link>
+        <Link 
+          to="/attendance" 
+          className="text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg hover:bg-white/5 font-medium"
+        >
+          Attendance
+        </Link>
+        <Link 
+          to="/calendar" 
+          className="text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg hover:bg-white/5 font-medium"
+        >
+          Calendar
+        </Link>
         
        
         
@@ -133,6 +145,49 @@ function Navbar() {
           )}
         </svg>
       </button>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="absolute top-full left-0 right-0 bg-black/95 backdrop-blur-xl border-b border-white/10 md:hidden">
+          <div className="flex flex-col p-4 space-y-2">
+            <Link 
+              to="/dashboard" 
+              className="text-gray-300 hover:text-white transition-colors px-4 py-3 rounded-lg hover:bg-white/5 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Leads
+            </Link>
+            <Link 
+              to="/students-dashboard" 
+              className="text-gray-300 hover:text-white transition-colors px-4 py-3 rounded-lg hover:bg-white/5 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Students
+            </Link>
+            <Link 
+              to="/attendance" 
+              className="text-gray-300 hover:text-white transition-colors px-4 py-3 rounded-lg hover:bg-white/5 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Attendance
+            </Link>
+            <Link 
+              to="/calendar" 
+              className="text-gray-300 hover:text-white transition-colors px-4 py-3 rounded-lg hover:bg-white/5 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Calendar
+            </Link>
+            <button 
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="text-left px-4 py-3 bg-white text-black font-medium rounded-lg transition-all duration-300 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
+              {isLoggingOut ? 'Logging Out...' : 'Log Out'}
+            </button>
+          </div>
+        </div>
+      )}
 
    
       
