@@ -243,9 +243,6 @@ const Calendar = () => {
       calendarDays.push(
         <div key={day} className={dayClass}>
           <span className="text-sm font-medium">{day}</span>
-          {attendanceStatus && (
-            <div className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-current opacity-60"></div>
-          )}
         </div>
       );
     }
@@ -308,7 +305,7 @@ const Calendar = () => {
                         variant="outline"
                         role="combobox"
                         aria-expanded={showDropdown}
-                        className="w-full justify-between bg-white/10 border-white/20 text-white hover:bg-white/20 h-10"
+                        className="w-full justify-between bg-white/10 border-white/20 text-white hover:bg-white/20 h-9"
                         disabled={loading}
                       >
                         {selectedStudentName || "Search student..."}
@@ -355,7 +352,7 @@ const Calendar = () => {
                 </div>
 
                 {/* Year Selection */}
-                <div className="min-w-[120px]">
+                <div className="min-w-[80px]">
                   <label className="text-sm text-gray-400 mb-1 block">Year</label>
                   <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(parseInt(value))}>
                     <SelectTrigger className="bg-white/10 border-white/20 text-white h-10">
@@ -372,7 +369,7 @@ const Calendar = () => {
                 </div>
 
                 {/* Month Selection */}
-                <div className="min-w-[140px]">
+                <div className="min-w-[80px]">
                   <label className="text-sm text-gray-400 mb-1 block">Month</label>
                   <Select value={selectedMonth.toString()} onValueChange={(value) => setSelectedMonth(parseInt(value))}>
                     <SelectTrigger className="bg-white/10 border-white/20 text-white h-10">
@@ -394,7 +391,7 @@ const Calendar = () => {
                     onClick={fetchStudents}
                     variant="outline"
                     size="sm"
-                    className="border-white/20 bg-white/10 text-white hover:bg-white/20 h-10"
+                    className="border-white/20 bg-white/10 text-white hover:bg-white/20 h-9"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
