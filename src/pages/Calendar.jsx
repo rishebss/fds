@@ -1,7 +1,7 @@
 // src/pages/Calendar.jsx
 import React, { useState, useEffect } from 'react';
 import { motion } from "motion/react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -282,13 +282,15 @@ const Calendar = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-transparent to-purple-500/15 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.15)_1px,transparent_0)] bg-[length:4px_4px] opacity-20 pointer-events-none" />
 
-      <div className="px-4 pt-24 pb-6 md:pt-28 md:pb-8 w-[60%] max-w-6xl h-[70%] mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="space-y-6"
-        >
+      <div className="px-4 pt-24 pb-6 md:pt-28 md:pb-8 w-full max-w-7xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)] overflow-hidden min-h-0">
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-2 h-full min-h-0 space-y-6"
+          >
           {/* Header Section */}
           <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-visible z-20">
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/15 via-transparent to-blue-500/15 pointer-events-none" />
@@ -476,7 +478,57 @@ const Calendar = () => {
             </CardContent>
           </Card>
         </motion.div>
+
+        {/* Sidebar Cards */}
+        <div className="flex flex-col gap-6 lg:sticky lg:top-28 h-full min-h-0">
+          {[
+            {title: 'Payments', emoji: '💵', path: '/payments'}, 
+            {title: 'Students', emoji: '🎓', path: '/students'}, 
+            {title: 'Leads', emoji: '📊', path: '/dashboard'}
+          ].map((item, idx) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 * (idx + 1), duration: 0.6 }}
+            >
+              <Link to={item.path} className="block">
+                <Card className="shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-hidden flex-1 flex flex-col min-h-0 cursor-pointer hover:bg-white/5 transition-colors">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-transparent to-purple-500/15 pointer-events-none" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:3px_3px] opacity-30 pointer-events-none" />
+                  
+                  <CardHeader className="relative z-10 pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 bg-white/10 rounded-lg flex items-center justify-center">
+                        <span className="text-lg">{item.emoji}</span>
+                      </div>
+                      <CardTitle className="text-lg font-semibold text-white">
+                        {item.title}
+                      </CardTitle>
+                    </div>
+                    <CardDescription className="text-gray-400 mt-1">
+                      <span className="text-sm text-gray-400 hover:text-white transition-colors font-bold">
+                        Click to view 
+                      </span>
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="relative z-10 flex-1">
+                    <div className="h-full flex items-center justify-center text-gray-400">
+                      {item.title === 'Payments' ? (
+                        <span className="text-sm text-red-400 font-semibold">Payment system coming soon</span>
+                      ) : (
+                        <span className="text-sm">View contents</span>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
       </div>
+    </div>
 
       <ToastContainer />
     </div>
