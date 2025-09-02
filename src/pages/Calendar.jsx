@@ -295,7 +295,15 @@ const Calendar = () => {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:3px_3px] opacity-30 pointer-events-none" />
             
             <CardContent className="relative z-10">
-              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-end gap-2">
+                
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 ">
+                {/* Title Section */}
+                <div className="flex items-end">
+                  <h2 className="text-3xl font-bold text-white">CALENDAR</h2>
+                </div>
+                
+                {/* Controls Section */}
+                <div className="flex flex-col sm:flex-row sm:items-end gap-2">
                 {/* Student Search with shadcn Popover + Command */}
                 <div className="min-w-[200px] relative z-50">
                   <label className="text-sm text-gray-400 mb-1 block">Student</label>
@@ -407,6 +415,7 @@ const Calendar = () => {
                       <path d="M21 3v6h-6"/>
                     </svg>
                   </Button>
+                </div>
                 </div>
               </div>
             </CardContent>
