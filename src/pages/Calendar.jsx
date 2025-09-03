@@ -32,6 +32,13 @@ const Calendar = () => {
   const [loading, setLoading] = useState(true);
   const [attendanceLoading, setAttendanceLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isAttendanceDialogOpen, setIsAttendanceDialogOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDateAttendance, setSelectedDateAttendance] = useState({
+    status: '',
+    notes: ''
+  });
+  const [isSavingAttendance, setIsSavingAttendance] = useState(false);
 
   // Constants
   const months = [
@@ -184,6 +191,81 @@ const Calendar = () => {
     setShowDropdown(false);
   };
 
+  // Handle date click to open attendance dialog
+  const handleDateClick = (year, month, day) => {
+    if (!selectedStudent) {
+      showToast('Please select a student first', 'error');
+      return;
+    }
+
+    const dateStr = formatDate(year, month, day);
+    const existingAttendance = attendanceData[dateStr];
+    
+    setSelectedDate({ year, month, day, dateStr });
+    setSelectedDateAttendance({
+      status: existingAttendance || '',
+      notes: '' // You can extend this to fetch notes from backend
+    });
+    setIsAttendanceDialogOpen(true);
+  };
+
+  // Save attendance data
+  const saveAttendance = async () => {
+    if (!selectedDate || !selectedStudent) return;
+
+    try {
+      setIsSavingAttendance(true);
+      const token = localStorage.getItem('authToken');
+      
+      if (!token) {
+        throw new Error('No authentication token found. Please login again.');
+      }
+
+      const response = await fetch('https://fifac-backend.vercel.app/api/attendance', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          studentId: selectedStudent,
+          date: selectedDate.dateStr,
+          status: selectedDateAttendance.status,
+          notes: selectedDateAttendance.notes
+        })
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+          throw new Error('Session expired. Please login again.');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Update local attendance data
+        setAttendanceData(prev => ({
+          ...prev,
+          [selectedDate.dateStr]: selectedDateAttendance.status
+        }));
+        
+        setIsAttendanceDialogOpen(false);
+        showToast('Updated successfully', 'success');
+      } else {
+        throw new Error(data.error || 'Failed to save attendance');
+      }
+    } catch (err) {
+      console.error('Error saving attendance:', err);
+      showToast(`Failed to save attendance: ${err.message}`, 'error');
+    } finally {
+      setIsSavingAttendance(false);
+    }
+  };
+
   // Effects
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -226,7 +308,7 @@ const Calendar = () => {
       const attendanceStatus = attendanceData[dateStr];
       const isToday = isCurrentMonth && today.getDate() === day;
       
-      let dayClass = "h-12 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-colors relative";
+      let dayClass = "h-12 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors relative cursor-pointer";
       
       if (isToday) {
         dayClass += " ring-2 ring-blue-400";
@@ -241,7 +323,11 @@ const Calendar = () => {
       }
       
       calendarDays.push(
-        <div key={day} className={dayClass}>
+        <div 
+          key={day} 
+          className={dayClass}
+          onClick={() => handleDateClick(selectedYear, selectedMonth, day)}
+        >
           <span className="text-sm font-medium">{day}</span>
         </div>
       );
@@ -531,6 +617,96 @@ const Calendar = () => {
     </div>
 
       <ToastContainer />
+
+      {/* Attendance Dialog */}
+      {isAttendanceDialogOpen && selectedDate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setIsAttendanceDialogOpen(false)}
+          />
+          
+          <div className="relative w-full max-w-md bg-black/95 backdrop-blur-xl border border-white/20 text-white rounded-xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:3px_3px] opacity-30" />
+            
+            <div className="relative z-10">
+              <div className="p-6 border-b border-white/10">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-white to-gray-300 rounded-lg flex items-center justify-center">
+                    <span className="text-black font-bold text-sm">📅</span>
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-white">
+                      Mark Attendance
+                    </h2>
+                    <p className="text-gray-400">
+                      {selectedDate.dateStr} - {selectedStudentName}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm text-gray-400 mb-3 block">Attendance Status</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { value: 'present', label: 'Present', color: 'bg-green-500/20 border-green-500/40 text-green-300' },
+                        { value: 'absent', label: 'Absent', color: 'bg-red-500/20 border-red-500/40 text-red-300' },
+                        { value: 'leave', label: 'Leave', color: 'bg-yellow-500/20 border-yellow-500/40 text-yellow-300' }
+                      ].map((status) => (
+                        <button
+                          key={status.value}
+                          onClick={() => setSelectedDateAttendance({...selectedDateAttendance, status: status.value})}
+                          className={`p-3 rounded-lg border text-sm font-medium transition-all ${
+                            selectedDateAttendance.status === status.value 
+                              ? status.color + ' ring-2 ring-white/30'
+                              : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                          }`}
+                        >
+                          {status.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm text-gray-400 mb-2 block">Notes (Optional)</label>
+                    <textarea
+                      value={selectedDateAttendance.notes}
+                      onChange={(e) => setSelectedDateAttendance({...selectedDateAttendance, notes: e.target.value})}
+                      className="w-full p-3 bg-white/10 border border-white/20 text-white placeholder:text-gray-400 rounded-lg resize-none focus:border-white/40 focus:ring-white/20"
+                      placeholder="Add any notes about attendance..."
+                      rows="3"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 border-t border-white/10 bg-gradient-to-r from-white/5 via-transparent to-white/5">
+                <div className="flex items-center justify-end gap-3">
+                  <Button
+                    onClick={() => setIsAttendanceDialogOpen(false)}
+                    variant="outline"
+                    className="border-white/20 text-white bg-transparent hover:text-white hover:bg-white/10"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={saveAttendance}
+                    disabled={isSavingAttendance || !selectedDateAttendance.status}
+                    className="bg-white text-black hover:bg-gray-200"
+                  >
+                    {isSavingAttendance ? 'Saving...' : 'Save Attendance'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
