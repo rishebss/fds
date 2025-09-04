@@ -151,7 +151,10 @@ const Calendar = () => {
         if (data.data && Array.isArray(data.data)) {
           data.data.forEach(record => {
             const date = new Date(record.date).toISOString().split('T')[0];
-            attendanceMap[date] = record.status;
+            attendanceMap[date] = {
+              status: record.status,
+              notes: record.notes || ''
+            };
           });
         }
         setAttendanceData(attendanceMap);
@@ -203,8 +206,8 @@ const Calendar = () => {
     
     setSelectedDate({ year, month, day, dateStr });
     setSelectedDateAttendance({
-      status: existingAttendance || '',
-      notes: '' // You can extend this to fetch notes from backend
+      status: existingAttendance?.status || '',
+      notes: existingAttendance?.notes || ''
     });
     setIsAttendanceDialogOpen(true);
   };
@@ -250,7 +253,10 @@ const Calendar = () => {
         // Update local attendance data
         setAttendanceData(prev => ({
           ...prev,
-          [selectedDate.dateStr]: selectedDateAttendance.status
+          [selectedDate.dateStr]: {
+            status: selectedDateAttendance.status,
+            notes: selectedDateAttendance.notes
+          }
         }));
         
         setIsAttendanceDialogOpen(false);
@@ -305,7 +311,8 @@ const Calendar = () => {
     // Days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = formatDate(selectedYear, selectedMonth, day);
-      const attendanceStatus = attendanceData[dateStr];
+      const attendanceRecord = attendanceData[dateStr];
+      const attendanceStatus = attendanceRecord?.status;
       const isToday = isCurrentMonth && today.getDate() === day;
       
       let dayClass = "h-12 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors relative cursor-pointer";
