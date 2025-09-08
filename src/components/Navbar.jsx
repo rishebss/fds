@@ -105,6 +105,12 @@ function Navbar() {
         >
           Calendar
         </Link>
+        <Link 
+          to="/payments" 
+          className="text-gray-300 hover:text-white transition-colors px-4 py-2 rounded-lg hover:bg-white/5 font-medium"
+        >
+          Payments
+        </Link>
         
        
         
@@ -177,6 +183,13 @@ function Navbar() {
               onClick={() => setIsMenuOpen(false)}
             >
               Calendar
+            </Link>
+            <Link 
+              to="/payments" 
+              className="text-gray-300 hover:text-white transition-colors px-4 py-3 rounded-lg hover:bg-white/5 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Payments
             </Link>
             <button 
               onClick={handleLogout}

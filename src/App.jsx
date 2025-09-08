@@ -6,6 +6,8 @@ import StudentsDashboard from './pages/StudentsDashboard'
 import StudentDetails from './pages/StudentDetails'
 import Attendance from './pages/Attendance'
 import Calendar from './pages/Calendar'
+import Payments from './pages/PaymentsPage'
+
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
             <Route path="/student/:id" element={<StudentDetails />} />
             <Route path="/attendance" element={<Attendance />} />
             <Route path="/calendar" element={<Calendar />} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="*" element={<Home />} />
           </Routes>
         </main>
       </div>
