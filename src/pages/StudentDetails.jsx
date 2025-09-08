@@ -702,7 +702,7 @@ const StudentDetails = () => {
 
           {/* Attendance and Payments Section */}
           <div className="lg:col-span-3">
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 h-full">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
               {/* Attendance Section */}
               <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/15 via-transparent to-blue-500/15 pointer-events-none" />
