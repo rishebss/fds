@@ -516,9 +516,9 @@ const [isCreating, setIsCreating] = useState(false);
                             <TableHead className="text-white font-medium sticky top-0 z-20 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
                               Contact
                             </TableHead>
-                            {/* <TableHead className="text-white font-medium sticky top-0 z-20 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
+                            <TableHead className="text-white font-medium sticky top-0 z-20 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
                               Status
-                            </TableHead> */}
+                            </TableHead>
                             <TableHead className="text-white font-medium sticky top-0 z-20 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
                               Created
                             </TableHead>
@@ -535,7 +535,7 @@ const [isCreating, setIsCreating] = useState(false);
                         <TableBody>
                           {filteredLeads.length === 0 ? (
                             <TableRow>
-                              <TableCell colSpan={8} className="text-center py-12 text-gray-400">
+                              <TableCell colSpan={6} className="text-center py-12 text-gray-400">
                                 <div className="space-y-2">
                                   <div className="w-16 h-16 mx-auto bg-white/10 rounded-full flex items-center justify-center">
                                     <span className="text-2xl">📋</span>
@@ -565,24 +565,25 @@ const [isCreating, setIsCreating] = useState(false);
                                 
                                 <TableCell className="text-white">
                                   <div>{lead.phone}</div>
-                                  {/* {lead.phone && (
-                                    <div className="text-sm text-gray-400">
-                                      {formatPhone(lead.phone)}
-                                    </div>
-                                  )} */}
                                 </TableCell>
                                 
-                                {/* <TableCell>
+                                <TableCell>
                                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                                     lead.status === 'New' 
                                       ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                                       : lead.status === 'Contacted'
                                       ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30'
+                                      : lead.status === 'Qualified'
+                                      ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                                      : lead.status === 'Enrolled'
+                                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                                      : lead.status === 'Not Interested'
+                                      ? 'bg-red-500/20 text-red-300 border border-red-500/30'
                                       : 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
                                   }`}>
                                     {lead.status || 'New'}
                                   </span>
-                                </TableCell> */}
+                                </TableCell>
                                 
                                 <TableCell className="text-gray-300">
                                   {lead.createdAt ? formatDate(lead.createdAt) : 'N/A'}

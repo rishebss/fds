@@ -176,12 +176,14 @@ const [isCreating, setIsCreating] = useState(false);
         const level = (student.level || "").toLowerCase();
         const batch = (student.batch || "").toLowerCase();
         const phone = (student.phone || "").toString().toLowerCase();
+        const status = (student.status || "").toLowerCase();
         return (
           name.includes(query) ||
           email.includes(query) ||
           level.includes(query) ||
           batch.includes(query) ||
-          phone.includes(query)
+          phone.includes(query) ||
+          status.includes(query)
         );
       })
     : students;
@@ -300,10 +302,16 @@ const [isCreating, setIsCreating] = useState(false);
                               Name
                             </TableHead>
                             <TableHead className="text-white font-medium sticky top-0 z-20 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
-                              Contact
+                              Age
                             </TableHead>
                             <TableHead className="text-white font-medium sticky top-0 z-20 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
-                              Level
+                              Phone
+                            </TableHead>
+                            <TableHead className="text-white font-medium sticky top-0 z-20 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
+                              Email
+                            </TableHead>
+                            <TableHead className="text-white font-medium sticky top-0 z-20 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
+                              Status
                             </TableHead>
                             <TableHead className="text-white font-medium sticky top-0 z-20 bg-black/60 backdrop-blur supports-[backdrop-filter]:bg-black/40">
                               Batch
@@ -317,7 +325,7 @@ const [isCreating, setIsCreating] = useState(false);
                         <TableBody>
                           {filteredStudents.length === 0 ? (
                             <TableRow>
-                              <TableCell colSpan={5} className="text-center py-12 text-gray-400">
+                              <TableCell colSpan={7} className="text-center py-12 text-gray-400">
                                 <div className="space-y-2">
                                   <div className="w-16 h-16 mx-auto bg-white/10 rounded-full flex items-center justify-center">
                                     <span className="text-2xl">🎓</span>
@@ -338,20 +346,18 @@ const [isCreating, setIsCreating] = useState(false);
                               >
                                 <TableCell className="font-medium text-white">
                                   {student.name}
-                                  {student.age && (
-                                    <span className="block text-sm text-gray-400">
-                                      Age: {student.age}
-                                    </span>
-                                  )}
                                 </TableCell>
                                 
                                 <TableCell className="text-white">
-                                  <div>{student.phone}</div>
-                                  {student.email && (
-                                    <div className="text-sm text-gray-400">
-                                      {student.email}
-                                    </div>
-                                  )}
+                                  {student.age || 'N/A'}
+                                </TableCell>
+                                
+                                <TableCell className="text-white">
+                                  {student.phone || 'N/A'}
+                                </TableCell>
+                                
+                                <TableCell className="text-white">
+                                  {student.email || 'N/A'}
                                 </TableCell>
                                 
                                 <TableCell>
@@ -359,10 +365,12 @@ const [isCreating, setIsCreating] = useState(false);
                                     student.status === 'Active' 
                                       ? 'bg-green-500/20 text-green-300 border border-green-500/30'
                                       : student.status === 'Inactive'
-                                      ? 'bg-yellow-500/20 text-red-300 border border-red-500/30'
+                                      ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                                      : student.status === 'Graduated'
+                                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
                                       : student.status === 'Discontinued'
-                                      ? 'bg-red-500/20 text-gray-300 border border-gray-500/30'
-                                      : 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
+                                      ? 'bg-gray-500/20 text-gray-300 border border-gray-500/30'
+                                      : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                                   }`}>
                                     {student.status || 'Enrolled'}
                                   </span>
