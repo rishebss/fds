@@ -31,6 +31,8 @@ const StudentDetails = () => {
   const [attendanceLoading, setAttendanceLoading] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [payments, setPayments] = useState([]);
+  const [paymentsLoading, setPaymentsLoading] = useState(false);
 
   // API Functions
   const fetchStudentDetails = async () => {
@@ -120,6 +122,56 @@ const StudentDetails = () => {
       setAttendanceLoading(false);
     }
   };
+
+  const fetchPayments = async () => {
+    try {
+      setPaymentsLoading(true);
+      
+      // Get the auth token from localStorage
+      const token = localStorage.getItem('authToken');
+      
+      if (!token) {
+        throw new Error('No authentication token found. Please login again.');
+      }
+      
+      const response = await fetch(
+        `https://fifac-backend.vercel.app/api/payments?studentId=${id}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+          throw new Error('Session expired. Please login again.');
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Filter payments for this student and get latest 10
+        const studentPayments = data.data
+          .filter(payment => payment.studentId === id)
+          .sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate))
+          .slice(0, 10);
+        setPayments(studentPayments);
+      } else {
+        throw new Error(data.error || 'Failed to fetch payments');
+      }
+    } catch (err) {
+      console.error('Error fetching payments:', err);
+      showToast('Failed to load payment records.', 'error');
+    } finally {
+      setPaymentsLoading(false);
+    }
+  };
   
   const handleDeleteMonth = async () => {
     if (!window.confirm(`Are you sure you want to delete all attendance records for ${currentMonth}/${currentYear}? This action cannot be undone.`)) {
@@ -174,6 +226,7 @@ const StudentDetails = () => {
   useEffect(() => {
     if (id) {
       fetchAttendance();
+      fetchPayments();
     }
   }, [id, currentMonth, currentYear]);
 
@@ -330,6 +383,23 @@ const StudentDetails = () => {
     return `px-2 py-1 rounded-full text-xs font-medium border ${statusConfig[status] || 'bg-gray-500/20 text-gray-300 border-gray-500/30'}`;
   };
 
+  const getPaymentStatusBadge = (status) => {
+    const statusConfig = {
+      completed: 'bg-green-500/20 text-green-300 border-green-500/30',
+      pending: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+      failed: 'bg-red-500/20 text-red-300 border-red-500/30'
+    };
+    
+    return `px-2 py-1 rounded-full text-xs font-medium border ${statusConfig[status] || 'bg-gray-500/20 text-gray-300 border-gray-500/30'}`;
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR'
+    }).format(amount || 0);
+  };
+
   // Effects
   useEffect(() => {
     // Check if user is authenticated
@@ -350,7 +420,7 @@ const StudentDetails = () => {
     return (
       <div className="min-h-screen bg-black">
         <Navbar />
-        <div className="px-4 py-10 md:py-20 w-full max-w-6xl mx-auto relative z-10">
+        <div className="px-4 py-10 md:py-20 w-full max-w-8xl mx-auto relative z-10">
           <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl">
             <CardContent className="pt-6">
               <div className="text-red-400 text-center">
@@ -381,15 +451,15 @@ const StudentDetails = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-transparent to-purple-500/15 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.15)_1px,transparent_0)] bg-[length:4px_4px] opacity-20 pointer-events-none" />
 
-      <div className="px-4 pt-24 pb-6 md:pt-28 md:pb-8 w-full max-w-6xl mx-auto relative z-10">
+      <div className="px-4 pt-24 pb-6 md:pt-28 md:pb-8 w-full max-w-8xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]"
+          className="grid grid-cols-1 lg:grid-cols-5 gap-3 items-start h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]"
         >
           {/* Student Details Section */}
-          <div className="lg:col-span-3 h-full">
+          <div className="lg:col-span-2 h-full">
             <Card className="w-full h-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-hidden flex flex-col">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-transparent to-purple-500/15 pointer-events-none" />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:3px_3px] opacity-30 pointer-events-none" />
@@ -630,119 +700,176 @@ const StudentDetails = () => {
             </Card>
           </div>
 
-          {/* Attendance Section */}
-          <div className="lg:col-span-2">
-            <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-hidden sticky top-28">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/15 via-transparent to-blue-500/15 pointer-events-none" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:3px_3px] opacity-30 pointer-events-none" />
-              
-              <CardHeader className="relative z-10">
-                <CardTitle className="text-lg font-bold text-white flex items-center gap-2">
-                  <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
-                  Attendance Records
-                </CardTitle>
-                <CardDescription className="text-gray-400 text-sm">
-                  {new Date(currentYear, currentMonth - 1).toLocaleString('default', { month: 'long', year: 'numeric' })}
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="relative z-10 space-y-4">
-                {/* Month/Year Selector and Delete Button */}
-                <div className="flex items-center gap-2">
-                  <Select
-                    value={currentMonth.toString()}
-                    onValueChange={(value) => setCurrentMonth(parseInt(value))}
-                  >
-                    <SelectTrigger className="flex-1 bg-gradient-to-r from-white/10 to-white/5 border-white/20 text-white hover:border-white/30 focus:border-white/40 focus:ring-2 focus:ring-white/10 transition-all duration-200 backdrop-blur-sm shadow-lg">
-                      <SelectValue placeholder="Select month" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white/10 backdrop-blur-xl border-white/20">
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
-                        <SelectItem key={month} value={month.toString()} className="text-white">
-                          <span className="flex items-center gap-2">
-                            
+          {/* Attendance and Payments Section */}
+          <div className="lg:col-span-3 h-full">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 h-full">
+              {/* Attendance Section */}
+              <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/15 via-transparent to-blue-500/15 pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:3px_3px] opacity-30 pointer-events-none" />
+                
+                <CardHeader className="relative z-10">
+                  <CardTitle className="text-base font-bold text-white flex items-center gap-2">
+                    <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
+                    Attendance
+                  </CardTitle>
+                  <CardDescription className="text-gray-400 text-xs">
+                    {new Date(currentYear, currentMonth - 1).toLocaleString('default', { month: 'short', year: 'numeric' })}
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="relative z-10 space-y-3">
+                  {/* Month/Year Selector */}
+                  <div className="flex items-center gap-2">
+                    <Select
+                      value={currentMonth.toString()}
+                      onValueChange={(value) => setCurrentMonth(parseInt(value))}
+                    >
+                      <SelectTrigger className="flex-1 bg-gradient-to-r from-white/10 to-white/5 border-white/20 text-white hover:border-white/30 focus:border-white/40 focus:ring-2 focus:ring-white/10 transition-all duration-200 backdrop-blur-sm shadow-lg text-xs">
+                        <SelectValue placeholder="Month" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white/10 backdrop-blur-xl border-white/20">
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
+                          <SelectItem key={month} value={month.toString()} className="text-white">
                             {new Date(currentYear, month - 1).toLocaleString('default', { month: 'short' })}
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  
-                  <Select
-                    value={currentYear.toString()}
-                    onValueChange={(value) => setCurrentYear(parseInt(value))}
-                  >
-                    <SelectTrigger className="flex-1 bg-gradient-to-r from-white/10 to-white/5 border-white/20 text-white hover:border-white/30 focus:border-white/40 focus:ring-2 focus:ring-white/10 transition-all duration-200 backdrop-blur-sm shadow-lg">
-                      <SelectValue placeholder="Select year" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white/10 backdrop-blur-xl border-white/20">
-                      {Array.from({ length: 5 }, (_, i) => currentYear - 2 + i).map(year => (
-                        <SelectItem key={year} value={year.toString()} className="text-white">
-                          <span className="flex items-center gap-2">
-                            
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    
+                    <Select
+                      value={currentYear.toString()}
+                      onValueChange={(value) => setCurrentYear(parseInt(value))}
+                    >
+                      <SelectTrigger className="flex-1 bg-gradient-to-r from-white/10 to-white/5 border-white/20 text-white hover:border-white/30 focus:border-white/40 focus:ring-2 focus:ring-white/10 transition-all duration-200 backdrop-blur-sm shadow-lg text-xs">
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white/10 backdrop-blur-xl border-white/20">
+                        {Array.from({ length: 5 }, (_, i) => currentYear - 2 + i).map(year => (
+                          <SelectItem key={year} value={year.toString()} className="text-white">
                             {year}
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  
-                  <Button
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
                     onClick={handleDeleteMonth}
                     variant="outline"
                     size="sm"
-                    className="border-red-500/50 text-white bg-red-500/50 text-xs"
+                    className="border-red-500/50 text-white bg-red-500/50 text-xs h-8"
                   >
                     Delete Month
                   </Button>
-                </div>
+                  </div>
 
-                {/* Attendance Table */}
-                {attendanceLoading ? (
-                  <div className="space-y-2">
-                    {[...Array(5)].map((_, i) => (
-                      <Skeleton key={i} className="h-10 bg-white/10 " />
-                    ))}
-                  </div>
-                ) : attendance.length === 0 ? (
-                  <div className="text-center py-8">
-                    <div className="w-16 h-16 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-4">
-                      <span className="text-2xl">📅</span>
+                  
+
+                  {/* Attendance Table */}
+                  {attendanceLoading ? (
+                    <div className="space-y-2">
+                      {[...Array(5)].map((_, i) => (
+                        <Skeleton key={i} className="h-8 bg-white/10" />
+                      ))}
                     </div>
-                    <p className="text-gray-400 text-sm">No attendance records found for this month.</p>
-                  </div>
-                ) : (
-                  <div className="border border-white/10 rounded-lg h-[396px] overflow-y-auto nice-scrollbar">
-                    <table className="w-full">
-                      <thead className="sticky top-0 bg-black/90 backdrop-blur-sm z-10">
-                        <tr className="border-b border-white/10">
-                          <th className="text-left p-3 text-xs font-medium text-gray-400 bg-black/50">Date</th>
-                          <th className="text-left p-3 text-xs font-medium text-gray-400 bg-black/50">Status</th>
-                          <th className="text-left p-3 text-xs font-medium text-gray-400 bg-black/50">Notes</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {attendance.map((record) => (
-                          <tr key={record.id} className="border-b border-white/5 hover:bg-white/ transition-colors">
-                            <td className="p-3 text-sm text-white">
-                              {formatAttendanceDate(record.date)}
-                            </td>
-                            <td className="p-3">
-                              <span className={getStatusBadge(record.status)}>
-                                {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
-                              </span>
-                            </td>
-                            <td className="p-3 text-sm text-gray-300 max-w-32 truncate" title={record.notes}>
-                              {record.notes || '-'}
-                            </td>
+                  ) : attendance.length === 0 ? (
+                    <div className="text-center py-6">
+                      <div className="w-12 h-12 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-3">
+                        <span className="text-lg">📅</span>
+                      </div>
+                      <p className="text-gray-400 text-xs">No attendance records found.</p>
+                    </div>
+                  ) : (
+                    <div className="border border-white/10 rounded-lg h-[350px] overflow-y-auto nice-scrollbar">
+                      <table className="w-full">
+                        <thead className="sticky top-0 bg-black/90 backdrop-blur-sm z-10">
+                          <tr className="border-b border-white/10">
+                            <th className="text-left p-2 text-xs font-medium text-gray-400 bg-black/50">Date</th>
+                            <th className="text-left p-2 text-xs font-medium text-gray-400 bg-black/50">Status</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                        </thead>
+                        <tbody>
+                          {attendance.map((record) => (
+                            <tr key={record.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                              <td className="p-2 text-xs text-white">
+                                {formatAttendanceDate(record.date)}
+                              </td>
+                              <td className="p-2">
+                                <span className={`${getStatusBadge(record.status)} text-xs`}>
+                                  {record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Payments Section */}
+              <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500/15 via-transparent to-blue-500/15 pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:3px_3px] opacity-30 pointer-events-none" />
+                
+                <CardHeader className="relative z-10">
+                  <CardTitle className="text-base font-bold text-white flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                    Recent Payments
+                  </CardTitle>
+                  <CardDescription className="text-gray-400 text-xs">
+                    Latest transactions
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="relative z-10 space-y-3">
+                  {/* Payments Table */}
+                  {paymentsLoading ? (
+                    <div className="space-y-2">
+                      {[...Array(5)].map((_, i) => (
+                        <Skeleton key={i} className="h-8 bg-white/10" />
+                      ))}
+                    </div>
+                  ) : payments.length === 0 ? (
+                    <div className="text-center py-6">
+                      <div className="w-12 h-12 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-3">
+                        <span className="text-lg">💳</span>
+                      </div>
+                      <p className="text-gray-400 text-xs">No payment records found.</p>
+                    </div>
+                  ) : (
+                    <div className="border border-white/10 rounded-lg h-[430px] overflow-y-auto nice-scrollbar">
+                      <table className="w-full">
+                        <thead className="sticky top-0 bg-black/90 backdrop-blur-sm z-10">
+                          <tr className="border-b border-white/10">
+                            <th className="text-left p-2 text-xs font-medium text-gray-400 bg-black/50">Date</th>
+                            <th className="text-left p-2 text-xs font-medium text-gray-400 bg-black/50">Amount</th>
+                            <th className="text-left p-2 text-xs font-medium text-gray-400 bg-black/50">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {payments.map((payment) => (
+                            <tr key={payment.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                              <td className="p-2 text-xs text-white">
+                                {formatAttendanceDate(payment.paymentDate)}
+                              </td>
+                              <td className="p-2 text-xs text-white font-semibold">
+                                {formatCurrency(payment.amount)}
+                              </td>
+                              <td className="p-2">
+                                <span className={`${getPaymentStatusBadge(payment.status)} text-xs`}>
+                                  {payment.status === 'completed' ? 'Completed' : payment.status?.charAt(0).toUpperCase() + payment.status?.slice(1) || 'Unknown'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </motion.div>
       </div>
