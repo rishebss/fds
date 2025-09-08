@@ -140,7 +140,7 @@ const Payments = () => {
     return (
       <div className="min-h-screen bg-black">
         <Navbar />
-        <div className="px-4 py-10 md:py-20 w-full max-w-6xl mx-auto relative z-10">
+        <div className="px-4 py-10 md:py-20 w-full max-w-7xl mx-auto relative z-10">
           <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl">
             <CardContent className="pt-6">
               <div className="text-red-400 text-center">

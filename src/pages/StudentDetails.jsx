@@ -420,7 +420,7 @@ const StudentDetails = () => {
     return (
       <div className="min-h-screen bg-black">
         <Navbar />
-        <div className="px-4 py-10 md:py-20 w-full max-w-8xl mx-auto relative z-10">
+        <div className="px-4 py-10 md:py-20 w-full max-w-7xl mx-auto relative z-10">
           <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl">
             <CardContent className="pt-6">
               <div className="text-red-400 text-center">
@@ -451,12 +451,12 @@ const StudentDetails = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-transparent to-purple-500/15 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.15)_1px,transparent_0)] bg-[length:4px_4px] opacity-20 pointer-events-none" />
 
-      <div className="px-4 pt-24 pb-6 md:pt-28 md:pb-8 w-full max-w-8xl mx-auto relative z-10">
+      <div className="px-4 pt-24 pb-6 md:pt-28 md:pb-8 w-full max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="grid grid-cols-1 lg:grid-cols-5 gap-3 items-start h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]"
+          className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]"
         >
           {/* Student Details Section */}
           <div className="lg:col-span-2 h-full">
@@ -702,7 +702,7 @@ const StudentDetails = () => {
 
           {/* Attendance and Payments Section */}
           <div className="lg:col-span-3 h-full">
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 h-full">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 h-full">
               {/* Attendance Section */}
               <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/15 via-transparent to-blue-500/15 pointer-events-none" />
