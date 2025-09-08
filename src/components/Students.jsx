@@ -191,7 +191,7 @@ const [isCreating, setIsCreating] = useState(false);
     return (
       <div className="min-h-screen bg-black">
         <Navbar />
-        <div className="px-4 py-10 md:py-20 w-full max-w-7xl mx-auto relative z-10">
+        <div className="px-4 py-10 md:py-20 w-full max-w-6xl mx-auto relative z-10">
           <Card className="w-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl">
             <CardContent className="pt-6">
               <div className="text-red-400 text-center">
@@ -394,7 +394,7 @@ const [isCreating, setIsCreating] = useState(false);
             </Card>
           </motion.div>
 
-          <div className="flex flex-col gap-6 lg:sticky lg:top-28 h-full min-h-0 mt-3">
+          <div className="flex flex-col gap-6 lg:sticky lg:top-28 min-h-0 mt-3">
             {[
               {title: 'Attendance', emoji: '📅', path: '/attendance'}, 
               {title: 'Leads', emoji: '📊', path: '/dashboard'}, 
