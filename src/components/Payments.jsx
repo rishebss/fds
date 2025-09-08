@@ -429,7 +429,7 @@ const Payments = () => {
               transition={{ delay: 0.4, duration: 0.6 }}
             >
               <Button 
-                onClick={() => window.open('/payment-portal', '_blank')}
+                onClick={() => window.open('https://fdspayments.vercel.app/', '_blank')}
                 className="w-[70%] h-12 bg-gradient-to-br from-blue-500/15 via-transparent to-purple-500/15 border border-white/10 shadow-xl hover:bg-white/5 transition-colors"
               >
                 <div className="flex flex-start gap-2">
