@@ -608,11 +608,9 @@ const Calendar = () => {
                   
                   <CardContent className="relative z-10 flex-1">
                     <div className="h-full flex items-center justify-center text-gray-400">
-                      {item.title === 'Payments' ? (
-                        <span className="text-sm text-red-400 font-semibold">Payment system coming soon</span>
-                      ) : (
+                      
                         <span className="text-sm">View contents</span>
-                      )}
+                      
                     </div>
                   </CardContent>
                 </Card>
