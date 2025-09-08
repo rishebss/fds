@@ -432,7 +432,7 @@ const [isCreating, setIsCreating] = useState(false);
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-2 h-full min-h-0"
+            className="lg:col-span-4 h-full min-h-0"
           >
             <Card className="w-full h-full shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-hidden mt-0 flex flex-col min-h-0">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-transparent to-purple-500/15 pointer-events-none" />
@@ -615,50 +615,7 @@ const [isCreating, setIsCreating] = useState(false);
             </Card>
           </motion.div>
 
-          {/* Metric Cards */}
-          <div className="flex flex-col gap-6 lg:sticky lg:top-28 min-h-0">
-            {[
-              {title: 'Payments', emoji: '💳', path:'/payments'}, 
-              {title: 'Attendance', emoji: '📅', path:'/attendance'}, 
-              {title: 'Students', emoji: '🎓', path:'/students-dashboard'}
-            ].map((item, idx) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * (idx + 1), duration: 0.6 }}
-              >
-                <Link to={item.path} className="block">
-                <Card className="shadow-xl border border-white/10 bg-black/40 backdrop-blur-md rounded-xl relative overflow-hidden flex-1 flex flex-col min-h-0">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-transparent to-purple-500/15 pointer-events-none" />
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] bg-[length:3px_3px] opacity-30 pointer-events-none" />
-                  
-                  <CardHeader className="relative z-10 pb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                        <span className="text-lg">{item.emoji}</span>
-                      </div>
-                      <CardTitle className="text-lg font-semibold text-white">
-                        {item.title}
-                      </CardTitle>
-                    </div>
-                    <CardDescription className="text-gray-400 mt-1 font-bold">
-                      Click to view
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="relative z-10 flex-1">
-                    <div className="h-full flex items-center justify-center text-gray-400">
-                      
-                        <span className="text-sm">View contents</span>
-                     
-                    </div>
-                  </CardContent>
-                </Card>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+          
         </div>
       </div>
 

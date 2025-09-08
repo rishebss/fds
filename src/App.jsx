@@ -12,7 +12,7 @@ import Payments from './pages/PaymentsPage'
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
+      <div className="bg-gray-50">
         
         <main>
           <Routes>
