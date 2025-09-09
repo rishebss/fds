@@ -73,7 +73,13 @@ const [isCreating, setIsCreating] = useState(false);
       const data = await response.json();
       
       if (data.success) {
-        setStudents(data.data);
+        // Sort students by createdAt date (latest first)
+        const sortedStudents = data.data.sort((a, b) => {
+          const dateA = new Date(a.createdAt || 0);
+          const dateB = new Date(b.createdAt || 0);
+          return dateB - dateA; // Latest dates first
+        });
+        setStudents(sortedStudents);
       } else {
         throw new Error(data.error || 'Failed to fetch students');
       }
@@ -128,7 +134,7 @@ const [isCreating, setIsCreating] = useState(false);
     const data = await response.json();
     
     if (data.success) {
-      // Add the new student to the local state
+      // Add the new student at the top of the list (since it's the latest)
       setStudents(prevStudents => [data.data, ...prevStudents]);
       setIsAddDialogOpen(false);
       setNewStudent({ name: '', phone: '', email: '', address: '', age: '', level: '', batch: '' });
@@ -281,7 +287,7 @@ const [isCreating, setIsCreating] = useState(false);
                 </div>
                 
                 <CardDescription className="text-gray-400">
-                  Manage and view all your enrolled students
+                  Manage and view all your enrolled students (sorted by latest enrollment)
                 </CardDescription>
               </CardHeader>
               

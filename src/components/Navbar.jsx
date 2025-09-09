@@ -27,37 +27,32 @@ function Navbar() {
     setIsMenuOpen(!isMenuOpen)
   }
 
+  // Optimized logout with reduced API dependency
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true)
       
-      // Get the auth token from localStorage
-      const token = localStorage.getItem('authToken')
-      
-      // Call logout endpoint (optional since JWT is stateless)
-      if (token) {
-        try {
-          await fetch('https://fifac-backend.vercel.app/api/auth/logout', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          })
-        } catch (error) {
-          // Even if the server call fails, we still want to logout on frontend
-          console.error('Server logout error:', error)
-        }
-      }
-      
-      // Clear authentication data from localStorage
+      // Clear authentication data immediately for better UX
       localStorage.removeItem('authToken')
       localStorage.removeItem('user')
       
-      // Show success message
-      showToast('Logged out successfully', 'success')
+      // Optional server-side logout (don't block user experience)
+      const token = localStorage.getItem('authToken')
+      if (token) {
+        // Fire and forget - don't wait for this
+        fetch('https://fifac-backend.vercel.app/api/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }).catch(error => {
+          console.error('Server logout error (non-blocking):', error)
+        })
+      }
       
-      // Redirect to login page
+      // Show success message and redirect immediately
+      showToast('Logged out successfully', 'success')
       navigate('/')
       
     } catch (error) {

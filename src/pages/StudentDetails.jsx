@@ -222,13 +222,35 @@ const StudentDetails = () => {
     }
   };
 
-  // Add this useEffect to fetch attendance when month/year changes
+  // Effects - Consolidated to prevent double API calls
   useEffect(() => {
+    // Check if user is authenticated
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      showToast('Please login to access this page', 'error');
+      navigate('/');
+      return;
+    }
+    
     if (id) {
+      // Fetch all data in parallel to avoid multiple sequential calls
+      Promise.all([
+        fetchStudentDetails(),
+        fetchAttendance(),
+        fetchPayments()
+      ]).catch(error => {
+        console.error('Error fetching initial data:', error);
+      });
+    }
+  }, [id, navigate]);
+
+  // Separate useEffect for month/year changes (only fetch attendance and payments)
+  useEffect(() => {
+    if (id && studentDetails) { // Only run if we already have student details
       fetchAttendance();
       fetchPayments();
     }
-  }, [id, currentMonth, currentYear]);
+  }, [currentMonth, currentYear]);
 
   const handleDeleteClick = () => {
     setShowConfirmDelete(true);
@@ -399,21 +421,6 @@ const StudentDetails = () => {
       currency: 'INR'
     }).format(amount || 0);
   };
-
-  // Effects
-  useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      showToast('Please login to access this page', 'error');
-      navigate('/');
-      return;
-    }
-    
-    if (id) {
-      fetchStudentDetails();
-    }
-  }, [id, navigate]);
 
   // Error state
   if (error) {
