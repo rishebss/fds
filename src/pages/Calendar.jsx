@@ -72,7 +72,7 @@ const Calendar = () => {
         throw new Error('No authentication token found. Please login again.');
       }
       
-      const response = await fetch('https://fifac-backend.vercel.app/api/students', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/students`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -122,7 +122,7 @@ const Calendar = () => {
         throw new Error('No authentication token found. Please login again.');
       }
 
-      const url = `https://fifac-backend.vercel.app/api/attendance/student/${selectedStudent}?year=${selectedYear}&month=${selectedMonth + 1}`;
+      const url = `${import.meta.env.VITE_API_URL}/api/attendance/student/${selectedStudent}?year=${selectedYear}&month=${selectedMonth + 1}`;
       console.log('📡 Fetching attendance data from:', url);
       
       const response = await fetch(url, {
@@ -224,7 +224,7 @@ const Calendar = () => {
         throw new Error('No authentication token found. Please login again.');
       }
 
-      const response = await fetch('https://fifac-backend.vercel.app/api/attendance', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/attendance`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

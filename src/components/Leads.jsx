@@ -74,7 +74,7 @@ const [isCreating, setIsCreating] = useState(false);
         throw new Error('No authentication token found. Please login again.');
       }
       
-      const response = await fetch('https://fifac-backend.vercel.app/api/leads', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -117,7 +117,7 @@ const [isCreating, setIsCreating] = useState(false);
         throw new Error('No authentication token found. Please login again.');
       }
       
-      const response = await fetch(`https://fifac-backend.vercel.app/api/leads/${leadId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads/${leadId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ const [isCreating, setIsCreating] = useState(false);
       return;
     }
 
-    const response = await fetch('https://fifac-backend.vercel.app/api/leads', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -221,7 +221,7 @@ const [isCreating, setIsCreating] = useState(false);
         return;
       }
       
-      const response = await fetch(`https://fifac-backend.vercel.app/api/leads/${selectedLead.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads/${selectedLead.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -297,7 +297,7 @@ const [isCreating, setIsCreating] = useState(false);
         return;
       }
       
-      const response = await fetch(`https://fifac-backend.vercel.app/api/leads/${selectedLead.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/leads/${selectedLead.id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

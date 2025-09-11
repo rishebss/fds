@@ -40,7 +40,7 @@ function Navbar() {
       const token = localStorage.getItem('authToken')
       if (token) {
         // Fire and forget - don't wait for this
-        fetch('https://fifac-backend.vercel.app/api/auth/logout', {
+        fetch(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,

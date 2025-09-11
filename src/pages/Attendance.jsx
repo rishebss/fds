@@ -46,7 +46,7 @@ const Attendance = () => {
         throw new Error('No authentication token found. Please login again.');
       }
       
-      const response = await fetch('https://fifac-backend.vercel.app/api/students', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/students`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -119,7 +119,7 @@ const Attendance = () => {
 
       for (const record of attendanceRecords) {
         try {
-          const response = await fetch('https://fifac-backend.vercel.app/api/attendance', {
+          const response = await fetch(`${import.meta.env.VITE_API_URL}/api/attendance`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,

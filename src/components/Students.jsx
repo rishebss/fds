@@ -53,7 +53,7 @@ const [isCreating, setIsCreating] = useState(false);
         throw new Error('No authentication token found. Please login again.');
       }
       
-      const response = await fetch('https://fifac-backend.vercel.app/api/students', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/students`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -112,7 +112,7 @@ const [isCreating, setIsCreating] = useState(false);
       return;
     }
 
-    const response = await fetch('https://fifac-backend.vercel.app/api/students', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/students`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
